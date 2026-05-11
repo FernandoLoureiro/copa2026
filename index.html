@@ -648,6 +648,42 @@
             }
           );
 
+          let pressTimer;
+
+          td.addEventListener('touchstart', () => {
+
+            pressTimer = setTimeout(async () => {
+
+              if (repeated[stickerId]) {
+
+                repeated[stickerId]--;
+
+                if (repeated[stickerId] <= 0) {
+                  delete repeated[stickerId];
+                }
+
+              } else if (saved[stickerId]) {
+
+                delete saved[stickerId];
+              }
+
+              await saveDB();
+
+              render();
+              renderTrades();
+
+            }, 600);
+
+          });
+
+          td.addEventListener('touchend', () => {
+            clearTimeout(pressTimer);
+          });
+
+          td.addEventListener('touchmove', () => {
+            clearTimeout(pressTimer);
+          });
+
           row.appendChild(td);
         }
 
