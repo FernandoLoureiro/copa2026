@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Figurinhas Copa 2026</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      color: #222;
+    }
+
+    header {
+      background: #111827;
+      color: white;
+      padding: 16px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: 28px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    input,
+    select,
+    button {
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      background: white;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .stats {
+      margin-top: 12px;
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+      font-weight: bold;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .group {
+      margin-bottom: 28px;
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .group-title {
+      background: #1f2937;
+      color: white;
+      padding: 12px 16px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #e5e7eb;
+      text-align: center;
+      padding: 8px;
+      font-size: 13px;
+    }
+
+    th {
+      background: #f9fafb;
+    }
+
+    .team-name {
+      text-align: left;
+      font-weight: bold;
+      padding-left: 12px;
+      min-width: 180px;
+    }
+
+    .sigla {
+      width: 60px;
+      font-weight: bold;
+      background: #f3f4f6;
+    }
+
+    .sticker {
+      width: 38px;
+      min-height: 38px;
+      cursor: pointer;
+      user-select: none;
+      transition: 0.15s;
+    }
+
+    .sticker:hover {
+      transform: scale(1.05);
+    }
+
+    .owned {
+      background: #16a34a;
+      color: white;
+      font-weight: bold;
+    }
+
+    .repeated {
+      background: #f59e0b;
+      color: white;
+      font-weight: bold;
+    }
+
+    .missing {
+      background: #f3f4f6;
+      color: #111827;
+    }
+
+    .trade-list {
+      margin-top: 32px;
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .trade-item {
+      background: #f59e0b;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 14px;
+      font-weight: bold;
+      margin: 4px;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .trade-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .trade-section {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .trade-section-title {
+      background: #1f2937;
+      color: white;
+      padding: 12px 16px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .trade-items-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 16px;
+    }
+
+    .trade-sticker {
+      min-width: 90px;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.15s;
+      border: 2px solid transparent;
+    }
+
+    .trade-sticker:hover {
+      transform: scale(1.03);
+    }
+
+    .trade-repeated {
+      background: #f59e0b;
+      color: white;
+    }
+
+    .trade-missing {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .trade-selected {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.25);
+    }
+
+    .trade-summary {
+      background: white;
+      border-radius: 16px;
+      padding: 16px;
+      margin-top: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .trade-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .trade-confirm-btn {
+      border: none;
+      background: #16a34a;
+      color: white;
+      padding: 12px 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .trade-confirm-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 900px) {
+      .team-name {
+        min-width: 120px;
+      }
+
+      th,
+      td {
+        padding: 4px;
+        font-size: 11px;
+      }
+
+      .sticker {
+        width: 28px;
+        height: 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>FIGURINHAS COPA 2026</h1>
+
+  <div class="filters">
+    <button id="exportBtn">Exportar JSON</button>
+
+    <button id="importBtn">Importar JSON</button>
+
+    <input
+      type="file"
+      id="importFile"
+      accept="application/json"
+      style="display:none;"
+    />
+
+    <input
+      type="text"
+      id="filterLetter"
+      placeholder="Filtrar por letra"
+    />
+
+    <select id="filterSigla">
+      <option value="">Todas as siglas</option>
+    </select>
+
+    <select id="filterStatus">
+      <option value="all">Todas</option>
+      <option value="owned">Tenho</option>
+      <option value="missing">Faltam</option>
+      <option value="repeated">Repetidas</option>
+    </select>
+
+    <button id="showTradesBtn">Tela de Trocas</button>
+  </div>
+
+  <div class="stats">
+    <div>Total: <span id="totalCount">0</span></div>
+    <div>Tenho: <span id="ownedCount">0</span></div>
+    <div>Faltam: <span id="missingCount">0</span></div>
+    <div>Conclusão: <span id="progress">0%</span></div>
+    <div>Repetidas: <span id="repeatedCount">0</span></div>
+  </div>
+</header>
+
+<div class="container" id="app"></div>
+
+<div
+  class="container"
+  id="tradeScreen"
+  style="display:none;"
+></div>
+
+<script>
+  const groups = {
+    'Grupo A': [
+      ['MEX', 'México'],
+      ['RSA', 'África do Sul'],
+      ['KOR', 'Coreia do Sul'],
+      ['CZE', 'Rep. Tcheca']
+    ],
+
+    'Grupo B': [
+      ['CAN', 'Canadá'],
+      ['BIH', 'Bósnia'],
+      ['QAT', 'Catar'],
+      ['SUI', 'Suíça']
+    ],
+
+    'Grupo C': [
+      ['BRA', 'Brasil'],
+      ['MAR', 'Marrocos'],
+      ['HAI', 'Haiti'],
+      ['USA', 'Estados Unidos']
+    ],
+
+    'Grupo D': [
+      ['PAR', 'Paraguai'],
+      ['AUS', 'Austrália'],
+      ['TUR', 'Turquia'],
+      ['GER', 'Alemanha']
+    ],
+
+    'Grupo E': [
+      ['CUW', 'Curaçao'],
+      ['CIV', 'Costa do Marfim'],
+      ['ECU', 'Equador'],
+      ['NED', 'Holanda']
+    ],
+
+    'Grupo F': [
+      ['JPN', 'Japão'],
+      ['SWE', 'Suécia'],
+      ['TUN', 'Tunísia']
+    ],
+
+    'Grupo G': [
+      ['BEL', 'Bélgica'],
+      ['EGY', 'Egito'],
+      ['IRN', 'Irã'],
+      ['NZL', 'Nova Zelândia']
+    ],
+
+    'Grupo H': [
+      ['ESP', 'Espanha'],
+      ['CPV', 'Cabo Verde'],
+      ['KSA', 'Arábia Saudita']
+    ],
+
+    'Grupo I': [
+      ['URU', 'Uruguai'],
+      ['FRA', 'França'],
+      ['SEN', 'Senegal'],
+      ['IRQ', 'Iraque'],
+      ['NOR', 'Noruega']
+    ],
+
+    'Grupo J': [
+      ['ARG', 'Argentina'],
+      ['ALG', 'Argélia'],
+      ['AUT', 'Áustria'],
+      ['JOR', 'Jordânia']
+    ],
+
+    'Grupo K': [
+      ['POR', 'Portugal'],
+      ['COD', 'Congo'],
+      ['UZB', 'Uzbequistão'],
+      ['COL', 'Colômbia']
+    ],
+
+    'Grupo L': [
+      ['ENG', 'Inglaterra'],
+      ['CRO', 'Croácia'],
+      ['GHA', 'Gana'],
+      ['PAN', 'Panamá']
+    ]
+  };
+
+  const DB_NAME = 'album-copa-db';
+  const STORE_NAME = 'album';
+
+  let saved = {};
+  let repeated = {};
+
+  async function openDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 1);
+
+      request.onupgradeneeded = event => {
+        const db = event.target.result;
+
+        if (!db.objectStoreNames.contains(STORE_NAME)) {
+          db.createObjectStore(STORE_NAME);
+        }
+      };
+
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error);
+    });
+  }
+
+  async function saveDB() {
+    const db = await openDB();
+
+    const tx = db.transaction(STORE_NAME, 'readwrite');
+    const store = tx.objectStore(STORE_NAME);
+
+    store.put(saved, 'saved');
+    store.put(repeated, 'repeated');
+  }
+
+  async function loadDB() {
+    const db = await openDB();
+
+    const tx = db.transaction(STORE_NAME, 'readonly');
+    const store = tx.objectStore(STORE_NAME);
+
+    saved = await new Promise(resolve => {
+      const req = store.get('saved');
+
+      req.onsuccess = () => {
+        resolve(req.result || {});
+      };
+    });
+
+    repeated = await new Promise(resolve => {
+      const req = store.get('repeated');
+
+      req.onsuccess = () => {
+        resolve(req.result || {});
+      };
+    });
+  }
+
+  const app = document.getElementById('app');
+  const tradeScreen = document.getElementById('tradeScreen');
+  const siglaFilter = document.getElementById('filterSigla');
+
+  const allSiglas = [];
+
+  Object.values(groups).forEach(group => {
+    group.forEach(([sigla]) => {
+      allSiglas.push(sigla);
+    });
+  });
+
+  allSiglas.sort().forEach(sigla => {
+    const option = document.createElement('option');
+
+    option.value = sigla;
+    option.textContent = sigla;
+
+    siglaFilter.appendChild(option);
+  });
+
+  function render() {
+    app.innerHTML = '';
+
+    const filterLetter =
+      document
+        .getElementById('filterLetter')
+        .value
+        .toLowerCase();
+
+    const filterSigla =
+      document.getElementById('filterSigla').value;
+
+    const filterStatus =
+      document.getElementById('filterStatus').value;
+
+    let total = 0;
+    let owned = 0;
+    let repeatedCount = 0;
+
+    window.repeatedItemsData = [];
+
+    Object.entries(groups).forEach(([groupName, teams]) => {
+
+      const filteredTeams = teams.filter(([sigla, nome]) => {
+
+        const matchesLetter =
+          !filterLetter ||
+          nome.toLowerCase().startsWith(filterLetter) ||
+          sigla.toLowerCase().startsWith(filterLetter);
+
+        const matchesSigla =
+          !filterSigla || sigla === filterSigla;
+
+        return matchesLetter && matchesSigla;
+      });
+
+      if (!filteredTeams.length) return;
+
+      const groupDiv = document.createElement('div');
+      groupDiv.className = 'group';
+
+      const title = document.createElement('div');
+      title.className = 'group-title';
+      title.textContent = groupName;
+
+      const table = document.createElement('table');
+
+      const header = document.createElement('tr');
+
+      header.innerHTML = `
+        <th>Seleção</th>
+        <th>Sigla</th>
+        ${Array.from(
+          { length: 20 },
+          (_, i) => `<th>${i + 1}</th>`
+        ).join('')}
+      `;
+
+      table.appendChild(header);
+
+      filteredTeams.forEach(([sigla, nome]) => {
+
+        const row = document.createElement('tr');
+
+        row.innerHTML = `
+          <td class="team-name">${nome}</td>
+          <td class="sigla">${sigla}</td>
+        `;
+
+        let visibleSticker = false;
+
+        for (let i = 1; i <= 20; i++) {
+
+          const stickerId = `${sigla}-${i}`;
+
+          const hasSticker = !!saved[stickerId];
+
+          const repeatedQty =
+            repeated[stickerId] || 0;
+
+          const isRepeated = repeatedQty > 0;
+
+          if (hasSticker) {
+            owned++;
+          }
+
+          if (isRepeated) {
+            repeatedCount += repeatedQty;
+
+            window.repeatedItemsData.push(
+              `${stickerId} (${repeatedQty}x)`
+            );
+          }
+
+          total++;
+
+          const shouldShow =
+            filterStatus === 'all' ||
+            (filterStatus === 'owned' && hasSticker) ||
+            (filterStatus === 'missing' && !hasSticker) ||
+            (filterStatus === 'repeated' && isRepeated);
+
+          if (shouldShow) {
+            visibleSticker = true;
+          }
+
+          const td = document.createElement('td');
+
+          td.className = `sticker ${
+            isRepeated
+              ? 'repeated'
+              : hasSticker
+                ? 'owned'
+                : 'missing'
+          }`;
+
+          td.style.display =
+            shouldShow ? '' : 'none';
+
+          td.innerHTML = `
+            <div>
+              ${i}${isRepeated ? ` +${repeatedQty}` : ''}
+            </div>
+          `;
+
+          td.addEventListener('click', async () => {
+
+            if (!saved[stickerId]) {
+              saved[stickerId] = true;
+            } else {
+              repeated[stickerId] =
+                (repeated[stickerId] || 0) + 1;
+            }
+
+            await saveDB();
+
+            render();
+            renderTrades();
+          });
+
+          td.addEventListener(
+            'contextmenu',
+            async event => {
+
+              event.preventDefault();
+
+              if (repeated[stickerId]) {
+
+                repeated[stickerId]--;
+
+                if (repeated[stickerId] <= 0) {
+                  delete repeated[stickerId];
+                }
+
+              } else if (saved[stickerId]) {
+
+                delete saved[stickerId];
+              }
+
+              await saveDB();
+
+              render();
+              renderTrades();
+            }
+          );
+
+          row.appendChild(td);
+        }
+
+        if (visibleSticker || filterStatus === 'all') {
+          table.appendChild(row);
+        }
+      });
+
+      groupDiv.appendChild(title);
+      groupDiv.appendChild(table);
+
+      app.appendChild(groupDiv);
+    });
+
+    const missing = total - owned;
+
+    const progress =
+      total
+        ? ((owned / total) * 100).toFixed(1)
+        : 0;
+
+    document.getElementById('totalCount').textContent = total;
+    document.getElementById('ownedCount').textContent = owned;
+    document.getElementById('missingCount').textContent = missing;
+    document.getElementById('progress').textContent = `${progress}%`;
+    document.getElementById('repeatedCount').textContent = repeatedCount;
+  }
+
+  function renderTrades() {
+
+  tradeScreen.innerHTML = '';
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'trade-grid';
+
+  const selectedRepeated = [];
+  const selectedMissing = [];
+
+  const pendingTrades = [];
+
+  const repeatedSection = document.createElement('div');
+  repeatedSection.className = 'trade-section';
+
+  const repeatedTitle = document.createElement('div');
+  repeatedTitle.className = 'trade-section-title';
+  repeatedTitle.textContent = 'Minhas Repetidas';
+
+  const repeatedGrid = document.createElement('div');
+  repeatedGrid.className = 'trade-items-grid';
+
+  Object.entries(repeated)
+  .filter(([_, qty]) => qty > 0)
+  .sort(([a], [b]) => a.localeCompare(b))
+  .forEach(([stickerId, qty]) => {
+
+      const item = document.createElement('div');
+
+      item.className = 'trade-sticker trade-repeated';
+      item.textContent = `${stickerId} (${qty}x)`;
+
+      item.addEventListener('click', () => {
+
+        const index = selectedRepeated.indexOf(stickerId);
+
+        if (index >= 0) {
+          selectedRepeated.splice(index, 1);
+          item.classList.remove('trade-selected');
+        } else {
+          selectedRepeated.push(stickerId);
+          item.classList.add('trade-selected');
+        }
+
+        updateSummary();
+      });
+
+      repeatedGrid.appendChild(item);
+    });
+
+  repeatedSection.appendChild(repeatedTitle);
+  repeatedSection.appendChild(repeatedGrid);
+
+  const missingSection = document.createElement('div');
+  missingSection.className = 'trade-section';
+
+  const missingTitle = document.createElement('div');
+  missingTitle.className = 'trade-section-title';
+  missingTitle.textContent = 'Figurinhas que Faltam';
+
+  const missingGrid = document.createElement('div');
+  missingGrid.className = 'trade-items-grid';
+  const missingStickers = [];
+  
+  Object.values(groups).forEach(group => {
+
+  group.forEach(([sigla]) => {
+
+    for (let i = 1; i <= 20; i++) {
+
+      const stickerId = `${sigla}-${i}`;
+
+      if (!saved[stickerId]) {
+        missingStickers.push(stickerId);
+      }
+    }
+  });
+});
+
+
+
+  missingStickers
+  .sort((a, b) => a.localeCompare(b))
+  .forEach(stickerId => {
+
+    const item = document.createElement('div');
+
+    item.className = 'trade-sticker trade-missing';
+    item.textContent = stickerId;
+
+    item.addEventListener('click', () => {
+
+      const index = selectedMissing.indexOf(stickerId);
+
+      if (index >= 0) {
+        selectedMissing.splice(index, 1);
+        item.classList.remove('trade-selected');
+      } else {
+        selectedMissing.push(stickerId);
+        item.classList.add('trade-selected');
+      }
+
+      updateSummary();
+    });
+
+    missingGrid.appendChild(item);
+  });
+
+  missingSection.appendChild(missingTitle);
+  missingSection.appendChild(missingGrid);
+
+  const summary = document.createElement('div');
+  summary.className = 'trade-summary';
+  summary.textContent =
+    'Selecione repetidas e faltantes';
+
+  const actions = document.createElement('div');
+  actions.className = 'trade-actions';
+
+  const addTradeBtn = document.createElement('button');
+  addTradeBtn.className = 'trade-confirm-btn';
+  addTradeBtn.textContent = 'Adicionar Trocas';
+  addTradeBtn.disabled = true;
+
+  const confirmBtn = document.createElement('button');
+  confirmBtn.className = 'trade-confirm-btn';
+  confirmBtn.textContent = 'Efetuar Trocas';
+  confirmBtn.disabled = true;
+
+  const tradesList = document.createElement('div');
+  tradesList.className = 'trade-list';
+
+  function updateSummary() {
+
+    summary.textContent =
+      `${selectedRepeated.length} repetidas | ` +
+      `${selectedMissing.length} faltantes`;
+
+    addTradeBtn.disabled =
+      !(selectedRepeated.length && selectedMissing.length);
+  }
+
+  function refreshTrades() {
+
+    tradesList.innerHTML = '';
+
+    confirmBtn.disabled = pendingTrades.length === 0;
+
+    if (!pendingTrades.length) {
+      tradesList.innerHTML =
+        '<p>Nenhuma troca adicionada.</p>';
+      return;
+    }
+
+    pendingTrades.forEach((trade, index) => {
+
+      const item = document.createElement('div');
+
+      item.className = 'trade-item';
+      item.textContent =
+        `${trade.from} → ${trade.to}`;
+
+      item.addEventListener('click', () => {
+
+        pendingTrades.splice(index, 1);
+
+        refreshTrades();
+      });
+
+      tradesList.appendChild(item);
+    });
+  }
+
+  addTradeBtn.addEventListener('click', () => {
+
+    const max = Math.min(
+      selectedRepeated.length,
+      selectedMissing.length
+    );
+
+    for (let i = 0; i < max; i++) {
+
+      pendingTrades.push({
+        from: selectedRepeated[i],
+        to: selectedMissing[i]
+      });
+    }
+
+    selectedRepeated.length = 0;
+    selectedMissing.length = 0;
+
+    document
+      .querySelectorAll('.trade-selected')
+      .forEach(el => {
+        el.classList.remove('trade-selected');
+      });
+
+    addTradeBtn.disabled = true;
+
+    refreshTrades();
+
+    summary.textContent =
+      'Selecione repetidas e faltantes';
+  });
+
+  confirmBtn.addEventListener('click', async () => {
+
+    pendingTrades.forEach(trade => {
+
+      repeated[trade.from]--;
+
+      if (repeated[trade.from] <= 0) {
+        delete repeated[trade.from];
+      }
+
+      saved[trade.to] = true;
+    });
+
+    await saveDB();
+
+    alert(`${pendingTrades.length} troca(s) realizadas!`);
+
+    render();
+    renderTrades();
+  });
+
+  actions.appendChild(addTradeBtn);
+  actions.appendChild(confirmBtn);
+
+  wrapper.appendChild(repeatedSection);
+  wrapper.appendChild(missingSection);
+  wrapper.appendChild(summary);
+  wrapper.appendChild(actions);
+  wrapper.appendChild(tradesList);
+
+  tradeScreen.appendChild(wrapper);
+
+  refreshTrades();
+}
+
+  document
+    .getElementById('showTradesBtn')
+    .addEventListener('click', () => {
+
+      const showingTrades =
+        tradeScreen.style.display !== 'none';
+
+      if (showingTrades) {
+
+        tradeScreen.style.display = 'none';
+        app.style.display = '';
+
+      } else {
+
+        app.style.display = 'none';
+        tradeScreen.style.display = '';
+
+        renderTrades();
+      }
+    });
+
+  document
+    .getElementById('exportBtn')
+    .addEventListener('click', () => {
+
+      const data = {
+        saved,
+        repeated
+      };
+
+      const blob = new Blob(
+        [JSON.stringify(data, null, 2)],
+        { type: 'application/json' }
+      );
+
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+
+      a.href = url;
+      a.download = 'album-copa-2026.json';
+
+      a.click();
+
+      URL.revokeObjectURL(url);
+    });
+
+  document
+    .getElementById('importBtn')
+    .addEventListener('click', () => {
+      document.getElementById('importFile').click();
+    });
+
+  document
+    .getElementById('importFile')
+    .addEventListener('change', event => {
+
+      const file = event.target.files[0];
+
+      if (!file) return;
+
+      const reader = new FileReader();
+
+      reader.onload = async e => {
+
+        try {
+
+          const data = JSON.parse(e.target.result);
+
+          saved = data.saved || {};
+          repeated = data.repeated || {};
+
+          await saveDB();
+
+          render();
+          renderTrades();
+
+          alert('Importação realizada com sucesso!');
+
+        } catch (err) {
+
+          alert('Arquivo JSON inválido.');
+        }
+      };
+
+      reader.readAsText(file);
+    });
+
+  document
+    .getElementById('filterLetter')
+    .addEventListener('input', render);
+
+  document
+    .getElementById('filterSigla')
+    .addEventListener('change', render);
+
+  document
+    .getElementById('filterStatus')
+    .addEventListener('change', render);
+
+  (async () => {
+
+    await loadDB();
+
+    render();
+    renderTrades();
+
+  })();
+</script>
+
+</body>
+</html>
