@@ -320,6 +320,7 @@
 ></div>
 
 <script>
+  const DEFAULT_RANGE = [1, 20];
   const groups = {
     'Grupo A': [
       ['MEX', 'México'],
@@ -402,7 +403,12 @@
       ['CRO', 'Croácia'],
       ['GHA', 'Gana'],
       ['PAN', 'Panamá']
-    ]
+    ],
+
+  'Especiais': [
+    ['FWC', 'FIFA World Cup History', 0, 19],
+    ['CC', 'Coca-Cola', 1, 14]
+  ]
   };
 
   const DB_NAME = 'album-copa-db';
@@ -410,6 +416,16 @@
 
   let saved = {};
   let repeated = {};
+
+function getRange(team) {
+  const [sigla, nome, start, end] = team;
+
+  if (start !== undefined && end !== undefined) {
+    return [start, end];
+  }
+
+  return DEFAULT_RANGE;
+}
 
   async function openDB() {
     return new Promise((resolve, reject) => {
@@ -552,8 +568,10 @@
         `;
 
         let visibleSticker = false;
+		
+        const [start, end] = getRange([sigla, nome]);
 
-        for (let i = 1; i <= 20; i++) {
+        for (let i = start; i <= end; i++) {
 
           const stickerId = `${sigla}-${i}`;
 
@@ -778,10 +796,15 @@
   
   Object.values(groups).forEach(group => {
 
-  group.forEach(([sigla]) => {
 
-    for (let i = 1; i <= 20; i++) {
+group.forEach((team) => {
 
+  const [sigla, nome, start, end] = team;
+
+  const [s, e] = getRange(team);
+
+  for (let i = s; i <= e; i++) {
+  
       const stickerId = `${sigla}-${i}`;
 
       if (!saved[stickerId]) {
