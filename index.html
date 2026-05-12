@@ -752,7 +752,17 @@ function getRange(sigla) {
 
   Object.entries(repeated)
   .filter(([_, qty]) => qty > 0)
-  .sort(([a], [b]) => a.localeCompare(b))
+  .sort(([a], [b]) => {
+
+  const [siglaA, numA] = a.split('-');
+  const [siglaB, numB] = b.split('-');
+
+  if (siglaA !== siglaB) {
+    return siglaA.localeCompare(siglaB);
+  }
+
+  return Number(numA) - Number(numB);
+})
   .forEach(([stickerId, qty]) => {
 
       const item = document.createElement('div');
@@ -815,7 +825,19 @@ group.forEach((team) => {
 
 
   missingStickers
-  .sort((a, b) => a.localeCompare(b))
+  .sort((a, b) => {
+
+  const [siglaA, numA] = a.split('-');
+  const [siglaB, numB] = b.split('-');
+
+  // primeiro ordena pela sigla
+  if (siglaA !== siglaB) {
+    return siglaA.localeCompare(siglaB);
+  }
+
+  // depois pelo número (como número mesmo)
+  return Number(numA) - Number(numB);
+})
   .forEach(stickerId => {
 
     const item = document.createElement('div');
